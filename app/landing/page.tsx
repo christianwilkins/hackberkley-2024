@@ -17,10 +17,10 @@ export default function SparklesPreview() {
         />
       </div>
       <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative z-20">
-        TrueAI
+        true.
       </h1>
-      <h2 className="md:text-5xl text-2xl lg:text-4xl font-bold text-center text-white relative z-20">
-        Using AI to stop misinformation
+      <h2 className="md:text-4xl text-2xl lg:text-3xl font-bold text-center text-white relative z-20">
+        using AI to stop misinformation
       </h2>
     </div>
   );
