@@ -28,7 +28,7 @@ export default function Home() {
   );
   return (
     <ChatWindow
-      endpoint="api/chat"
+      endpoint="http://127.0.0.1:8000/"
       emoji="👨‍🏫"
       titleText="Well Informed LLM"
       placeholder="I'm an LLM that helps you verify what is real and fake. Ask me anything!"
