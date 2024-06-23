@@ -46,6 +46,4 @@ def hello_world(body: Query):
     }
 
     response = requests.post(url, json=params, headers=headers)
-    
-    print(response.json())
     return response.json()

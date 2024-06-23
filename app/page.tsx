@@ -5,15 +5,15 @@ import { PlaceholdersAndVanishInput } from "./components/ui/placeholders-and-van
 import { useState } from "react";
 import axios from "axios";
 
-async function fastAPICall() {
-  try {
-    const response = await fetch("http://localhost:8000");
-    const data = await response.json();
-    console.log(data.message);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
+// async function fastAPICall() {
+//   try {
+//     const response = await fetch("http://localhost:8000");
+//     const data = await response.json();
+//     console.log(data.message);
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// }
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
