@@ -32,11 +32,6 @@ export default function Home() {
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(
-      (e.currentTarget.elements.namedItem("inputField") as HTMLInputElement)
-        .value,
-      "VALUE",
-    );
     const question = (
       e.currentTarget.elements.namedItem("inputField") as HTMLInputElement
     ).value; // TODO: value of inputbox on submit, call API after
@@ -49,7 +44,7 @@ export default function Home() {
       const response = await fetch("http://127.0.0.1:8000/", requestOptions);
       const data = await response.json();
       setTextRef(data.answer);
-      console.log(data.answer);
+      console.log(data, "Response");
     } catch (error) {
       console.error("Error:", error);
     }
