@@ -17,7 +17,7 @@ export default function Home() {
   };
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    (e.currentTarget.value);
+    (e.currentTarget.value); // TODO: value of inputbox on submit, call API after
     console.log("submitted");
   };
 
