@@ -21,7 +21,6 @@ export function ChatWindow(props: {
   showIngestForm?: boolean,
   showIntermediateStepsToggle?: boolean
 }) {
-  conn()
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { endpoint, emptyStateComponent, placeholder, titleText = "An LLM", showIngestForm, showIntermediateStepsToggle, emoji } = props;

@@ -25,9 +25,13 @@ class Query(BaseModel):
     question: str
 
 @app.get('/')
+def hello(body: Query):
+    return {"message": body.question}
+
+@app.post('/')
 def hello_world(body: Query):
     #url = "https://api.ydc-index.io/rag"
-
+    print(body)
     #url = "https://chat-api.you.com/research"
     params = {
         "query": body.question,
@@ -43,4 +47,4 @@ def hello_world(body: Query):
 
     response = requests.post(url, json=params, headers=headers)
 
-    return {"data": response.json()["answer"]}
+    return {"data": response.json()}

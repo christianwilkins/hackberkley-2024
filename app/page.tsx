@@ -3,7 +3,7 @@
 import { ChatWindow } from "@/components/ChatWindow";
 import { PlaceholdersAndVanishInput } from "./components/ui/placeholders-and-vanish-input";
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 
 async function fastAPICall() {
   try {
@@ -32,12 +32,26 @@ export default function Home() {
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const question = e.currentTarget.value; // TODO: value of inputbox on submit, call API after
+    console.log(
+      (e.currentTarget.elements.namedItem("inputField") as HTMLInputElement)
+        .value,
+      "VALUE",
+    );
+    const question = (
+      e.currentTarget.elements.namedItem("inputField") as HTMLInputElement
+    ).value; // TODO: value of inputbox on submit, call API after
     try {
-      const response = await axios.post('/api/hello', { question })
-      setTextRef(response.data.data)
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: question }),
+      };
+      const response = await fetch("http://127.0.0.1:8000/", requestOptions);
+      const data = await response.json();
+      setTextRef(data.answer);
+      console.log(data.answer);
     } catch (error) {
-      console.error('Error:', error)
+      console.error("Error:", error);
     }
     setIsLoading(true);
     console.log("submitted");
@@ -55,9 +69,7 @@ export default function Home() {
           onSubmit={onSubmit}
         />
       )}
-      {isLoading && (
-        <p>{textRef}</p>
-      )}
+      {isLoading && <p>{textRef}</p>}
     </div>
   );
 }
