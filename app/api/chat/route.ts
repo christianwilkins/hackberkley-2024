@@ -1,73 +1,44 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
+import { NextResponse } from 'next/server';
 
-import { ChatOpenAI } from "@langchain/openai";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { HttpResponseOutputParser } from "langchain/output_parsers";
+export async function POST(request: Request) {
+  const youApiKey = '90a7919a-440a-4c2a-bdeb-ca967c50dd23<__>1PTsFeETU8N2v5f4qmtDZVGS';
 
-export const runtime = "edge";
-
-const formatMessage = (message: VercelChatMessage) => {
-  return `${message.role}: ${message.content}`;
-};
-
-const TEMPLATE = `You are a professional fact checker. Verify whether the claim the user presents is true or false. Give a score of how accurate you believe this claim to be between 1 and 100.
-
-Current conversation:
-{chat_history}
-
-User: {input}
-AI:`;
-
-/**
- * This handler initializes and calls a simple chain with a prompt,
- * chat model, and output parser. See the docs for more information:
- *
- * https://js.langchain.com/docs/guides/expression_language/cookbook#prompttemplate--llm--outputparser
- */
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const messages = body.messages ?? [];
-    const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
-    const currentMessageContent = messages[messages.length - 1].content;
-    const prompt = PromptTemplate.fromTemplate(TEMPLATE);
-
-    /**
-     * You can also try e.g.:
-     *
-     * import { ChatAnthropic } from "langchain/chat_models/anthropic";
-     * const model = new ChatAnthropic({});
-     *
-     * See a full list of supported models at:
-     * https://js.langchain.com/docs/modules/model_io/models/
-     */
-    const model = new ChatOpenAI({
-      temperature: 0.8,
-      modelName: "gpt-3.5-turbo-1106",
-    });
-
-    /**
-     * Chat models stream message chunks rather than bytes, so this
-     * output parser handles serialization and byte-encoding.
-     */
-    const outputParser = new HttpResponseOutputParser();
-
-    /**
-     * Can also initialize as:
-     *
-     * import { RunnableSequence } from "@langchain/core/runnables";
-     * const chain = RunnableSequence.from([prompt, model, outputParser]);
-     */
-    const chain = prompt.pipe(model).pipe(outputParser);
-
-    const stream = await chain.stream({
-      chat_history: formattedPreviousMessages.join("\n"),
-      input: currentMessageContent,
-    });
-
-    return new StreamingTextResponse(stream);
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
+  if (!youApiKey) {
+    return NextResponse.json({ error: 'YOU_API_KEY is not set' }, { status: 500 });
   }
+
+  try {
+    const { query } = await request.json();
+
+    const response = await fetch(`https://chat-api.you.com/smart`, {
+      method: 'POST',
+      headers: {
+        'X-API-Key': youApiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    // Process the response here if needed
+    const formattedResponse = processResponse(data);
+
+    return NextResponse.json({ formattedResponse });
+  } catch (error) {
+    console.error('Error calling You.com API:', error);
+    return NextResponse.json({ error: 'Failed to fetch data from You.com API' }, { status: 500 });
+  }
+}
+
+
+function processResponse(data: any) {
+  // Process the response from You.com API here
+  // This is where you'd implement the formatting logic we discussed earlier
+  // For now, just returning the raw response
+  return JSON.stringify(data);
 }
