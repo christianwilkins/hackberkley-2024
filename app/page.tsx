@@ -3,17 +3,8 @@
 import { ChatWindow } from "@/components/ChatWindow";
 import { PlaceholdersAndVanishInput } from "./components/ui/placeholders-and-vanish-input";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
-
-// async function fastAPICall() {
-//   try {
-//     const response = await fetch("http://localhost:8000");
-//     const data = await response.json();
-//     console.log(data.message);
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// }
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,6 +43,10 @@ export default function Home() {
     console.log("submitted");
   };
 
+  const handleButtonClick = () => {
+    setIsLoading(false);
+  };
+
   return (
     <div className="h-[40rem] flex flex-col justify-center  items-center px-4">
       <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl dark:text-white text-black">
@@ -64,7 +59,12 @@ export default function Home() {
           onSubmit={onSubmit}
         />
       )}
-      {isLoading && <p>{textRef}</p>}
+      {isLoading && (
+        <div className="flex flex-col justify-center items-center">
+          <Button variant="outline" onClick={handleButtonClick}>Reset</Button>
+          <p>{textRef}</p>
+        </div>
+      )}
     </div>
   );
 }
