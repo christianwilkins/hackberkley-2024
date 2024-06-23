@@ -4,13 +4,13 @@ export default function Home() {
   const InfoCard = (
     <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%] overflow-hidden">
       <h1 className="text-3xl md:text-4xl mb-4">
-        TrueAI: A way to combat misinformation
+        true. a way to combat misinformation
       </h1>
       <ul>
         <li className="text-l">
           🤝
           <span className="ml-2">
-            This project attempts to fight {" "}
+            this project attempts to fight {" "}
             <a href="https://en.wikipedia.org/wiki/Misinformation" target="_blank">
               misinformation
             </a>{" "}
@@ -20,7 +20,7 @@ export default function Home() {
         <li className="text-l">
           👇
           <span className="ml-2">
-            Try asking e.g. <code>Who is the second president of the United States?</code> below!
+            try asking e.g. <code>Who is the second president of the United States?</code> below!
           </span>
         </li>
       </ul>
