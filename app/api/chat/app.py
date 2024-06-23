@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
+import json
+import requests
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -19,8 +21,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+class Query(BaseModel):
+    question: str
 
 @app.get('/')
-def hello_world():
-    return {"message": "Hello World"}
+def hello_world(body: Query):
+    #url = "https://api.ydc-index.io/rag"
+
+    #url = "https://chat-api.you.com/research"
+    params = {
+        "query": body.question,
+        "chat_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a"
+    }
+    
+    url = "https://chat-api.you.com/smart"
+
+    headers = {
+        "X-API-Key": "90a7919a-440a-4c2a-bdeb-ca967c50dd23<__>1PTsFeETU8N2v5f4qmtDZVGS",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, json=params, headers=headers)
+
+    return {"data": response.json()["answer"]}
