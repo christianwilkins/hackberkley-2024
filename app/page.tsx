@@ -61,8 +61,8 @@ export default function Home() {
       )}
       {isLoading && (
         <div className="flex flex-col justify-center items-center">
-          <p>{textRef}</p>
           <Button variant="outline" onClick={handleButtonClick}>Reset</Button>
+          <p>{textRef}</p>
         </div>
       )}
     </div>
