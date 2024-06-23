@@ -79,10 +79,9 @@ export function ChatWindow(props: {
       const messagesWithUserReply = messages.concat({ id: messages.length.toString(), content: input, role: "user" });
       setMessages(messagesWithUserReply);
       const response = await fetch(endpoint, {
-        method: "POST",
+        method: "GET",
         body: JSON.stringify({
-          messages: messagesWithUserReply,
-          show_intermediate_steps: true
+          question: input
         })
       });
       const json = await response.json();
