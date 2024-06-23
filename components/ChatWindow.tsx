@@ -21,7 +21,6 @@ export function ChatWindow(props: {
   showIngestForm?: boolean,
   showIntermediateStepsToggle?: boolean
 }) {
-  conn()
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { endpoint, emptyStateComponent, placeholder, titleText = "An LLM", showIngestForm, showIntermediateStepsToggle, emoji } = props;
@@ -139,7 +138,7 @@ export function ChatWindow(props: {
           <input
             className="grow mr-8 p-4 rounded"
             value={input}
-            placeholder={placeholder ?? "What's it like to be a pirate?"}
+            placeholder={placeholder ?? "null placeholder"}
             onChange={handleInputChange}
           />
           <button type="submit" className="shrink-0 px-8 py-4 bg-sky-600 rounded w-28">

@@ -1,38 +1,75 @@
+"use client";
+
 import { ChatWindow } from "@/components/ChatWindow";
+import { PlaceholdersAndVanishInput } from "./components/ui/placeholders-and-vanish-input";
+import { useState } from "react";
+import axios from "axios";
+
+async function fastAPICall() {
+  try {
+    const response = await fetch("http://localhost:8000");
+    const data = await response.json();
+    console.log(data.message);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
 
 export default function Home() {
-  const InfoCard = (
-    <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%] overflow-hidden">
-      <h1 className="text-3xl md:text-4xl mb-4">
-        true. a way to combat misinformation
-      </h1>
-      <ul>
-        <li className="text-l">
-          🤝
-          <span className="ml-2">
-            this project attempts to fight {" "}
-            <a href="https://en.wikipedia.org/wiki/Misinformation" target="_blank">
-              misinformation
-            </a>{" "}
-            using AI.
-          </span>
-        </li>
-        <li className="text-l">
-          👇
-          <span className="ml-2">
-            try asking e.g. <code>Who is the second president of the United States?</code> below!
-          </span>
-        </li>
-      </ul>
-    </div>
-  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [textRef, setTextRef] = useState<string>("TextRef is null");
+
+  const placeholders = [
+    "Does Google provide nap pods for sleep-deprived employees?",
+    "Did Pfizer illegally test drugs in Nigeria?",
+    "Is China the largest foreign landowner in Africa?",
+    "Are EVs better for the planet than gas cars?",
+    "Did voter fraud impact the 2020 election?",
+  ];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+  };
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(
+      (e.currentTarget.elements.namedItem("inputField") as HTMLInputElement)
+        .value,
+      "VALUE",
+    );
+    const question = (
+      e.currentTarget.elements.namedItem("inputField") as HTMLInputElement
+    ).value; // TODO: value of inputbox on submit, call API after
+    try {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: question }),
+      };
+      const response = await fetch("http://127.0.0.1:8000/", requestOptions);
+      const data = await response.json();
+      setTextRef(data.answer);
+      console.log(data.answer);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    setIsLoading(true);
+    console.log("submitted");
+  };
+
   return (
-    <ChatWindow
-      endpoint="http://127.0.0.1:8000/"
-      emoji="👨‍🏫"
-      titleText="Well Informed LLM"
-      placeholder="I'm an LLM that helps you verify what is real and fake. Ask me anything!"
-      emptyStateComponent={InfoCard}
-    ></ChatWindow>
+    <div className="h-[40rem] flex flex-col justify-center  items-center px-4">
+      <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl dark:text-white text-black">
+        is it true?
+      </h2>
+      {!isLoading && (
+        <PlaceholdersAndVanishInput
+          placeholders={placeholders}
+          onChange={handleChange}
+          onSubmit={onSubmit}
+        />
+      )}
+      {isLoading && <p>{textRef}</p>}
+    </div>
   );
 }
