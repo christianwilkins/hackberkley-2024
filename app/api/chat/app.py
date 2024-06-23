@@ -31,10 +31,9 @@ def hello(body: Query):
 @app.post('/')
 def hello_world(body: Query):
     #url = "https://api.ydc-index.io/rag"
-    print(body)
     #url = "https://chat-api.you.com/research"
     params = {
-        "query": body.question,
+        "query": f"Can you answer this in only True or False and less tha 50 words: {body.question}",
         "chat_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a"
     }
     
