@@ -34,16 +34,19 @@ app.add_middleware(
 
 @app.get('/')
 def hello_world():
+    params = {
+        "query": body.question,
+        "chat_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a"
+    }
+
     url = "https://chat-api.you.com/smart"
 
-    payload = {"query": "test"}
     headers = {
         "X-API-Key": "90a7919a-440a-4c2a-bdeb-ca967c50dd23<__>1PTsFeETU8N2v5f4qmtDZVGS",
         "Content-Type": "application/json"
     }
 
-    response = requests.request("POST", url, json=payload, headers=headers)
+    response = requests.post(url, json=params, headers=headers)
 
-    print(response.text)
-    return response.text
+    return {"data": response.json()["answer"]}
 
