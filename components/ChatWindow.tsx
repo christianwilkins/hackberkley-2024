@@ -26,6 +26,7 @@ export function ChatWindow(props: {
 
   const { endpoint, emptyStateComponent, placeholder, titleText = "An LLM", showIngestForm, showIntermediateStepsToggle, emoji } = props;
 
+  const [apiResponse, setApiResponse] = useState("");
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(false);
   const [intermediateStepsLoading, setIntermediateStepsLoading] = useState(false);
   const ingestForm = showIngestForm && <UploadDocumentsForm></UploadDocumentsForm>;
@@ -162,7 +163,6 @@ export function ChatWindow(props: {
 
 
 export async function conn() {
-  const [apiResponse, setApiResponse] = useState("");
 
   // useEffect(() => {
   //   const fetchData = async () => {
