@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useChat } from "ai/react";
-import { useRef, useState, ReactElement } from "react";
+import { useRef, useState, useEffect, ReactElement } from "react";
 import type { FormEvent } from "react";
 
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
@@ -21,6 +21,7 @@ export function ChatWindow(props: {
   showIngestForm?: boolean,
   showIntermediateStepsToggle?: boolean
 }) {
+  conn()
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { endpoint, emptyStateComponent, placeholder, titleText = "An LLM", showIngestForm, showIntermediateStepsToggle, emoji } = props;
@@ -55,6 +56,7 @@ export function ChatWindow(props: {
         });
       }
     });
+
 
   async function sendMessage(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -155,4 +157,25 @@ export function ChatWindow(props: {
       <ToastContainer/>
     </div>
   );
+
+}
+
+
+export async function conn() {
+  const [apiResponse, setApiResponse] = useState("");
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000"); // Replace with your API endpoint
+        const data = await response.json();
+        console.log(data.message); // Adjust based on your API response structure
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    // };
+
+  //   fetchData();
+  // }, []);
+
 }
