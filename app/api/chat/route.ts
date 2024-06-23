@@ -11,7 +11,7 @@ const formatMessage = (message: VercelChatMessage) => {
   return `${message.role}: ${message.content}`;
 };
 
-const TEMPLATE = `You are a professional fact checker. Verify whether the claim the user presents is true or false.
+const TEMPLATE = `You are a professional fact checker. Verify whether the claim the user presents is true or false. Give a score of how accurate you believe this claim to be between 1 and 100.
 
 Current conversation:
 {chat_history}
