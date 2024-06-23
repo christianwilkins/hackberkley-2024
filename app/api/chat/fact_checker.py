@@ -6,57 +6,109 @@ from bs4 import BeautifulSoup
 import openai
 import requests 
 import json
+import pandas as pd  
+import os
 
-'''
-response format: 
+''' These functions are called by the Flask code for prompt testing'''
 
-{
-  "hits": [
-    {
-      "url": "https://you.com",
-      "title": "The World's Greatest Search Engine!",
-      "description": "Search on YDC",
-      "thumbnail_url": "https://www.somethumbnailsite.com/thumbnail.jpg",
-      "snippets": [
-        "I'm an AI assistant that helps you get more done. What can I help you with?"
-      ]
-    }
-  ],
-  "latency": 1
-}
+os.chdir('C:/Users/ashly/OneDrive/Documents/Education Material/AIBerkeleyHackathon')
 
-'''
+class Accuracy: 
+    def __init__(self):
+        self.true_positive = 0
+        self.false_positive = 0
+        self.true_negative = 0
+        self.false_negative = 0
+        self.miscalculation = 0
+  
 
-def creditSource(source_url): 
-    author = getAuthor(url=source_url)
-    
-    # sends a response on author and location credibility
-    # ''' Search API '''
-    # url = "https://api.ydc-index.io/search"
+score = Accuracy() # keep track of the ongoing accuracy
 
-    # headers = {"X-API-Key": "90a7919a-440a-4c2a-bdeb-ca967c50dd23<__>1PTsFeETU8N2v5f4qmtDZVGS", 
-    #         "Content-Type": "application/json"}
+# iteratively run these functions to check if the youdotcom AI is accurate
+def getFakePrompt():
+    df = pd.read_csv(os.getcwd()+'/hackberkley-2024/archive-1/Fake.csv')
+    count = 0
+    for index, row in df.iterrows():
+        count += 1
+        answer = checkInfo(row['text'])
+        if answer == 1:
+            score.false_positive += 1
+        elif answer == 0:
+            score.true_negative += 1
+        else:
+          # error occurred
+            score.miscalculation += 1
+            
+        if count >= 10: 
+            break
+  
+def getTruePrompt():
+    df = pd.read_csv(os.getcwd()+'/hackberkley-2024/archive-1/True.csv')
+    count = 0
+    for index, row in df.iterrows():
+        count += 1
+        answer = checkInfo(row['text'])
+        if answer == 1:
+            score.true_positive += 1
+        elif answer == 0:
+            score.false_negative += 1
+        else:
+          # error occurred
+            score.miscalculation += 1
+        if count >= 10: 
+            break 
+  
+# check the True or False information for validity 
 
-    # search_query = "Is "
-
-    # payload = {
-    #     "query": search_query,
-    #     "limit": 10  
-    # }
-
-    # response = requests.get(url, headers=headers, params=payload)
-
-    # print(response.json())
-
-
-def getAuthor(url):
-   
+def checkInfo(text, source_url=None):
     api_url = "https://chat-api.you.com/research"
-    url = """ WASHINGTON (Reuters) - The head of a conservative Republican faction in the U.S. Congress, who voted this month for a huge expansion of the national debt to pay for tax cuts, called himself a â€œfiscal conservativeâ€ on Sunday and urged budget restraint in 2018. In keeping with a sharp pivot under way among Republicans, U.S. Representative Mark Meadows, speaking on CBSâ€™ â€œFace the Nation,â€ drew a hard line on federal spending, which lawmakers are bracing to do battle over in January. When they return from the holidays on Wednesday, lawmakers will begin trying to pass a federal budget in a fight likely to be linked to other issues, such as immigration policy, even as the November congressional election campaigns approach in which Republicans will seek to keep control of Congress. President Donald Trump and his Republicans want a big budget increase in military spending, while Democrats also want proportional increases for non-defense â€œdiscretionaryâ€ spending on programs that support education, scientific research, infrastructure, public health and environmental protection. â€œThe (Trump) administration has already been willing to say: â€˜Weâ€™re going to increase non-defense discretionary spending ... by about 7 percent,â€™â€ Meadows, chairman of the small but influential House Freedom Caucus, said on the program. â€œNow, Democrats are saying thatâ€™s not enough, we need to give the government a pay raise of 10 to 11 percent. For a fiscal conservative, I donâ€™t see where the rationale is. ... Eventually you run out of other peopleâ€™s money,â€ he said. Meadows was among Republicans who voted in late December for their partyâ€™s debt-financed tax overhaul, which is expected to balloon the federal budget deficit and add about $1.5 trillion over 10 years to the $20 trillion national debt. â€œItâ€™s interesting to hear Mark talk about fiscal responsibility,â€ Democratic U.S. Representative Joseph Crowley said on CBS. Crowley said the Republican tax bill would require the  United States to borrow $1.5 trillion, to be paid off by future generations, to finance tax cuts for corporations and the rich. â€œThis is one of the least ... fiscally responsible bills weâ€™ve ever seen passed in the history of the House of Representatives. I think weâ€™re going to be paying for this for many, many years to come,â€ Crowley said. Republicans insist the tax package, the biggest U.S. tax overhaul in more than 30 years,  will boost the economy and job growth. House Speaker Paul Ryan, who also supported the tax bill, recently went further than Meadows, making clear in a radio interview that welfare or â€œentitlement reform,â€ as the party often calls it, would be a top Republican priority in 2018. In Republican parlance, â€œentitlementâ€ programs mean food stamps, housing assistance, Medicare and Medicaid health insurance for the elderly, poor and disabled, as well as other programs created by Washington to assist the needy. Democrats seized on Ryanâ€™s early December remarks, saying they showed Republicans would try to pay for their tax overhaul by seeking spending cuts for social programs. But the goals of House Republicans may have to take a back seat to the Senate, where the votes of some Democrats will be needed to approve a budget and prevent a government shutdown. Democrats will use their leverage in the Senate, which Republicans narrowly control, to defend both discretionary non-defense programs and social spending, while tackling the issue of the â€œDreamers,â€ people brought illegally to the country as children. Trump in September put a March 2018 expiration date on the Deferred Action for Childhood Arrivals, or DACA, program, which protects the young immigrants from deportation and provides them with work permits. The president has said in recent Twitter messages he wants funding for his proposed Mexican border wall and other immigration law changes in exchange for agreeing to help the Dreamers. Representative Debbie Dingell told CBS she did not favor linking that issue to other policy objectives, such as wall funding. â€œWe need to do DACA clean,â€ she said.  On Wednesday, Trump aides will meet with congressional leaders to discuss those issues. That will be followed by a weekend of strategy sessions for Trump and Republican leaders on Jan. 6 and 7, the White House said. Trump was also scheduled to meet on Sunday with Florida Republican Governor Rick Scott, who wants more emergency aid. The House has passed an $81 billion aid package after hurricanes in Florida, Texas and Puerto Rico, and wildfires in California. The package far exceeded the $44 billion requested by the Trump administration. The Senate has not yet voted on the aid. """
+          
+          
+    if source_url: # check the url if it contains an input value
+        payload = {
+          "query": f"Answer this with True or False ONLY, Is this information real or fake meaning not real {source_url}",
+            "chat_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a"
+          }
+    else:
+        payload = {
+          "query": f"Answer this with True or False, Is this information real or fake {text}",
+            "chat_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a"
+          }
+        
+    headers = {
+        "X-API-Key": "90a7919a-440a-4c2a-bdeb-ca967c50dd23<__>1PTsFeETU8N2v5f4qmtDZVGS",
+        "Content-Type": "application/json"
+      }
     
+    response = requests.post(api_url, json=payload, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        summary = data.get("answer", "Answer not found")
+        print(f"The author of the article is: {summary}")
+        summary = summary.lower()
+        return 1 if 'true' in summary else 0
+    else:
+        print("Failed to retrieve the answer")
+        return -1 # test did not work accurately
+
+
+# Provide details about the author of the articles credibility
+def provideAuthorDetails(name):
+    df = pd.read_csv('C:/Users/ashly/OneDrive/Documents/Education Material/AIBerkeleyHackathon/hackberkley-2024/archive/fake.csv')
+    count = 0
+    for index, row in df.iterrows():
+        count += 1
+        
+        
+        if count >= 10:
+            break
+    # return creditAuthor(name)
+
+def creditAuthor(name):
+    api_url = "https://chat-api.you.com/research"
+        
     payload = {
-      "query": f"Answer this with True or False, Is this information real or fake {url}",
-        # "query": f"Write a short summary about the author of this article: {url}",
+        "query": f"Write a short summary about the background of the author of this article: {name}. Show their credibility in this short summary.",
         "chat_id": "3c90c3cc-0d44-4b50-8888-8dd25736052a"
       }
 
@@ -73,7 +125,19 @@ def getAuthor(url):
         print(f"The author of the article is: {summary}")
     else:
         print("Failed to retrieve the author information")
-        
-   
     
-creditSource('https://www.nytimes.com/2024/06/07/health/cancer-black-women.html')
+    return summary
+        
+
+cm = {
+      "true_positive": score.true_positive,
+      "false_positive":score.false_positive,
+      "true_negative": score.true_negative,
+      "false_negative":score.false_negative,
+      "miscalculation":score.miscalculation
+      }
+
+accuracy_calculation = json.dumps(cm)
+file = open('accuracy_calculation.json', 'w')
+file.write(accuracy_calculation)
+file.close()
